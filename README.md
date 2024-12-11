@@ -32,7 +32,17 @@ We have implemented our "prototype" MoIST model in `main.py` with all of the fun
 
 For convenience, we have also attached the Jupyter notebook in `main.ipynb` that can be easily imported into Google Colab.
 
-## 5. References
+## 5. Navigation
+
+We have implemented our "prototype" MoIST model in `main.py` with all of the functions necessary to run and train the model. By default, MoIST will use the teacher model weights given by the `resnet18_cifar10_tailored_epoch20.pth` file and student weights given by the `student_1.pth` file. Adjustable parameters can be found within the `Config` class at the top of the file.
+
+In addition, we have uploaded the following:
+* **paper** contains our report and related information
+* **param_sweeps** contains all code related to parameter sweeps, as described in report
+* **proof_of_concept** contains code for the hardcoded proof-of-concept MoIST, described in report
+* **teacher_model** contains code for training our modified ResNet-18 (whose weights are uploaded as the `resnet18_cifar10_tailored_epoch20.pth` file
+
+## 6. References
 
 [^1]: Hinton, Geoffrey, Oriol Vinyals, and Jeff Dean. “Distilling the Knowledge in a Neural Network.” arXiv, March 9, 2015. http://arxiv.org/abs/1503.02531.
 [^2]: Shazeer, Noam, Azalia Mirhoseini, Krzysztof Maziarz, Andy Davis, Quoc Le, Geoffrey Hinton, and Jeff Dean. “Outrageously Large Neural Networks: The Sparsely-Gated Mixture-of-Experts Layer.” arXiv, January 23, 2017. http://arxiv.org/abs/1701.06538.
