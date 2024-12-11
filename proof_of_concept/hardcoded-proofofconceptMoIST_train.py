@@ -532,6 +532,7 @@ def main():
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
     train_loader, test_loader = get_data_loaders()
 
+    ### uncomment this portion if you want to train your own teacher model
     # Step 1: Initialize and train the teacher model
     # teacher = TeacherModel().to(device)
     # print("Training the Teacher Model:")
@@ -560,7 +561,7 @@ def main():
     student_optimizers = [AdamW(student.parameters(), lr=config.lr) for student in students]
     # student_optimizers = [AdamW(student.parameters(), lr=config.lr, weight_decay=0.01) for student in students]
 
-
+    ### uncomment this portion if you want to distill your own student models
     # # Step 6: Distill teacher knowledge into students
     # print("\nDistilling Teacher Knowledge into a Single Student:")
     # single_student = StudentModel().to(device)
@@ -574,7 +575,15 @@ def main():
     # torch.save(single_student.state_dict(), single_student_save_path)
     # print(f"Single Student saved to {single_student_save_path}")
 
-    # print("\nDuplicating the Single Student:")
+    # #print("\nDuplicating the Single Student:")
+    # students = []
+    # for i in range(config.num_students):
+    #     student = StudentModel().to(device)
+    #     student.load_state_dict(torch.load(single_student_save_path))
+    #     students.append(student)
+
+    # print(f"{config.num_students} Students initialized by duplicating the Single Student model.")
+
     #Load the pre-trained single student model
     single_student_path = "student_1.pth"  # Ensure this is the correct path to your saved student model
 
@@ -589,31 +598,6 @@ def main():
     evaluate_with_metrics(students[0], test_loader, device, description="Single Student")
 
     print(f"{config.num_students} Students initialized by duplicating the Single Student model.")
-
-    # #print("\nDuplicating the Single Student:")
-    # students = []
-    # for i in range(config.num_students):
-    #     student = StudentModel().to(device)
-    #     student.load_state_dict(torch.load(single_student_save_path))
-    #     students.append(student)
-
-    # print(f"{config.num_students} Students initialized by duplicating the Single Student model.")
-
-    # print("\nDistilling Teacher Knowledge into Students:")
-    # for i, student in enumerate(students):
-    #     optimizer_student = AdamW(student.parameters(), lr=config.lr)
-    #     #for epoch in range(config.epochs // 2):
-    #     for epoch in range(30):
-    #         distill_teacher_to_student(teacher, student, train_loader, optimizer_student, nn.CrossEntropyLoss(), device)
-
-    #     # Save the distilled student model
-    #     student_save_path = config.student_model_path.format(i + 1)
-    #     torch.save(student.state_dict(), student_save_path)
-    #     print(f"Student {i + 1} saved to {student_save_path}")
-
-    #     # Evaluate the student on the validation dataset
-    #     print(f"\nEvaluating Student {i + 1}:")
-    #     evaluate_with_metrics(student, test_loader, device, description=f"Student {i + 1}")
 
     # Skip Router Training
     print("\nSkipping Router Training: Using Big Class Map for Hard Routing")
