@@ -198,12 +198,6 @@ def create_big_class_map_from_teacher(teacher, data_loader, num_big_classes, dev
 
     return big_class_map
 
-def balance_big_class_map(big_class_map):
-    total_counts = sum(big_class_map.values())
-    for class_idx in big_class_map:
-        big_class_map[class_idx] /= total_counts  # Normalize probabilities
-    return big_class_map
-
 def distill_teacher_to_router_with_clusters(
     teacher, router, loader, optimizer, device, big_class_map, epochs=5, use_combined_loss=True
 ):
@@ -632,6 +626,13 @@ def main():
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
     train_loader, test_loader = get_data_loaders()
 
+    ### uncomment this portion if you want to train your own teacher model!
+    # Step 1: Initialize and train the teacher model
+    # teacher = ResNet18CIFAR10().to(device)
+    # print("Training the Teacher Model:")
+    # teacher = train_teacher(teacher, train_loader, test_loader, device, epochs=config.epochs, lr=config.lr)
+
+    #comment out this portion if you want to train your own teacher model!
     teacher = ResNet18CIFAR10().to(device)
     teacher.load_state_dict(torch.load("resnet18_cifar10_tailored_epoch20.pth"))
     teacher.to(device)
@@ -684,6 +685,30 @@ def main():
     print("\nVisualizing Router Assignments:")
     visualize_router_assignments(router, test_loader, config.num_classes, config.num_students, device)
 
+    ### uncomment this portion if you want to distill your own student models
+    # # Step 6: Distill teacher knowledge into students
+    # print("\nDistilling Teacher Knowledge into a Single Student:")
+    # single_student = StudentModel().to(device)
+    # optimizer_student = AdamW(single_student.parameters(), lr=config.lr)
+
+    # for epoch in range(config.epochs):
+    #     distill_teacher_to_student(teacher, single_student, train_loader, optimizer_student, nn.CrossEntropyLoss(), device)
+
+    # # Save the single student model
+    # single_student_save_path = config.student_model_path.format(1)
+    # torch.save(single_student.state_dict(), single_student_save_path)
+    # print(f"Single Student saved to {single_student_save_path}")
+
+    # #print("\nDuplicating the Single Student:")
+    # students = []
+    # for i in range(config.num_students):
+    #     student = StudentModel().to(device)
+    #     student.load_state_dict(torch.load(single_student_save_path))
+    #     students.append(student)
+
+    # print(f"{config.num_students} Students initialized by duplicating the Single Student model.")
+    
+    ### comment out this portion if you want to distill your own student models
     # Load the pre-trained single student model
     single_student_path = "student_1.pth"  # Ensure this is the correct path to your saved student model
 
