@@ -8,6 +8,8 @@
 \usepackage{xcolor}
 \usepackage{adjustbox}
 
+\def\BibTeX{{\rm B\kern-.05em{\sc i\kern-.025em b}\kern-.08em
+    T\kern-.1667em\lower.7ex\hbox{E}\kern-.125emX}}
 \begin{document}
 
 \title{MoIST: Mixture of Intellectuals via Student-Teachers}
@@ -50,10 +52,10 @@ MoE uses a set of models, each specialized in some way, and ensembles their outp
 We propose MoIST: a Mixture of Intellectuals via Student-Teachers, depicted in Fig \ref{frameworkMoist}. Our model involves a combination of KD and MoE. First, we have a teacher model that distills its knowledge to multiple duplicate students. We then have a router that will divide the input dataset's class labels into subcategories. The router will then assign each student a designated subcategory, allowing them to become specialized in producing correct outputs for our model. Through this, we can create multiple smaller student models, each of which will perform comparably to the original teacher model on its assigned subset while being a fraction of the computational cost.
 
 \begin{figure}[ht!] %!t
-  \centering
-  \includegraphics[width=2.5in]{figures/MoIST_framework.png}
-  \caption{Framework for MoIST, combining Student-Teacher KD and MoE}
-  \label{frameworkMoist}
+\centering
+\includegraphics[width=2.5in]{figures/MoIST_framework.png}
+\caption{Framework for MoIST, combining Student-Teacher KD and MoE}
+\label{frameworkMoist}
 \end{figure}
 
 %% make a logit one, roughly draw a picture on a piece of paper
@@ -77,7 +79,7 @@ All models were trained for 20 epochs. This choice reflects the exploratory natu
 
 \section{Results}
 
-Our results are summarized in Table \ref{table:performance_comparison} and details are provided in the following sections.
+Our results are summarized in Table \ref{table:performance_comparison} and details are provided in the following sections. 
 
 \subsection{Baseline Comparisons}
 
@@ -96,10 +98,10 @@ The hardcoded MoIST framework achieved a test accuracy of 89.49\%, and a loss of
 We then implemented the prototype MoIST model, trained for 20 epochs from our teacher model. We pretrained a CNN architecture router for 20 epochs on input-cluster labels, which yielded an 88.50\% routing accuracy for cluster classifications. Joint training with students yielded the following class distributions across students in the test set, as displayed in Fig \ref{routerdist}, indicating that the cluster assignments yielded promising student specialization results.
 
 \begin{figure}[ht!] %!t
-  \centering
-  \includegraphics[width=3in]{figures/router_specialization_baseline.png}
-  \caption{Prototype MoIST class specializations across students, using an 88\% accurate clustering router}
-  \label{routerdist}
+\centering
+\includegraphics[width=3in]{figures/router_specialization_baseline.png}
+\caption{Prototype MoIST class specializations across students, using an 88\% accurate clustering router}
+\label{routerdist}
 \end{figure}
 
 Our prototype MoIST model achieved a test accuracy of 84.08\%, and a loss of 0.5098. In addition, it achieved a latency of 0.635 ms and used 0.10 MFLOPs of computation. Though not as over-performing as a theoretical 100\% router in accuracy, our prototype MoIST demonstrates accuracy comparable to the original teacher model. The model demonstrates a 10x improvement in latency and an 87x reduction in MFLOPs, a significant improvement in computational efficiency over the original teacher model.
@@ -107,30 +109,30 @@ Our prototype MoIST model achieved a test accuracy of 84.08\%, and a loss of 0.5
 \subsection{Parameter Sweeps}
 
 \begin{table}[!t]
-  \renewcommand{\arraystretch}{1.1}
-  \centering
-  \caption{Performance comparison of MoIST models}
-  \label{table:performance_comparison}
-  \begin{adjustbox}{width=0.425\textwidth}
-    \small
-    \begin{tabular}{|c|c|c|c|c|}
-      \hline
-                                               & \textbf{Accuracy} & \textbf{Loss} & \textbf{Latency (ms)} & \textbf{MFLOPs/Img} \\ \hline
-      \textbf{ResNet-18 Teacher}               & 83.80\%           & 0.4910        & 6.511                 & 8.70                \\ \hline
-      \textbf{Distilled Student}               & 79.35\%           & 0.6332        & 6.591                 & 0.10                \\ \hline
-      \textbf{Conceptual 100\% Router}         & 89.49\%           & 0.3052        & 0.534                 & 0.10                \\ \hline
-      \textbf{Prototype MoIST with CNN Router} & 84.08\%           & 0.5098        & 0.635                 & 0.10                \\ \hline
-      \textbf{MoIST + Transformer Router}      & 84.01\%           & 0.5002        & 1.188                 & 0.10                \\ \hline
-      \textbf{MoIST + Linear 3NN Router}       & 83.52\%           & 0.5071        & 0.945                 & 0.10                \\ \hline
-    \end{tabular}
-  \end{adjustbox}
+\renewcommand{\arraystretch}{1.1}
+\centering
+\caption{Performance comparison of MoIST models}
+\label{table:performance_comparison} 
+\begin{adjustbox}{width=0.425\textwidth}
+\small
+\begin{tabular}{|c|c|c|c|c|}
+\hline
+ & \textbf{Accuracy} & \textbf{Loss} & \textbf{Latency (ms)} & \textbf{MFLOPs/Img} \\ \hline
+\textbf{ResNet-18 Teacher} & 83.80\% & 0.4910 & 6.511 & 8.70 \\ \hline
+\textbf{Distilled Student} & 79.35\% & 0.6332 & 6.591 & 0.10 \\ \hline
+\textbf{Conceptual 100\% Router} & 89.49\% & 0.3052 & 0.534 & 0.10 \\ \hline
+\textbf{Prototype MoIST with CNN Router} & 84.08\% & 0.5098 & 0.635 & 0.10 \\ \hline
+\textbf{MoIST + Transformer Router} & 84.01\% &  0.5002 & 1.188 & 0.10 \\ \hline
+\textbf{MoIST + Linear 3NN Router} & 83.52\% & 0.5071 & 0.945 & 0.10 \\ \hline
+\end{tabular}
+\end{adjustbox}
 \end{table}
 
 \begin{figure}[ht!] %!t
-  \centering
-  \includegraphics[width=3.45in]{figures/param_sweeps.png}
-  \caption{Parameter sweeps of the prototype MoIST framework, displaying: (a) test accuracy, latency, and MFLOPs/image performance relative to the number of students employed, and (b) test accuracy and MFLOPs/image performance relative to the size of student's hidden dimension layers}
-  \label{param_sweep}
+\centering
+\includegraphics[width=3.45in]{figures/param_sweeps.png}
+\caption{Parameter sweeps of the prototype MoIST framework, displaying: (a) test accuracy, latency, and MFLOPs/image performance relative to the number of students employed, and (b) test accuracy and MFLOPs/image performance relative to the size of student's hidden dimension layers}
+\label{param_sweep}
 \end{figure}
 
 The objective of our parameter sweeps is to investigate the optimal MoIST architecture. Initially, we conducted a parameter sweep on the number of students, and our results indicate that a MoIST model with three students yields the highest test accuracy and the lowest latency, as illustrated in Fig. \ref{param_sweep}a. In the context of the CIFAR-10 dataset, we see that this distribution will result in all of the non-land vehicles in one cluster, on-land vehicles in one cluster, and all animals in one cluster, creating effective clusters for the students to specialize on. In the future, we plan to explore determining the optimal value of $k$ using the $k$-means clustering algorithm, rather than predefining the number of students.
@@ -144,9 +146,33 @@ Finally, we evaluated the router architecture using a CNN, a 3-layer linear neur
 Our MoIST model maintained the same accuracy as the original ResNet-18 model that we trained and both reduced the number of computations required and inference time. While the initial proof-of-concept with manually defined data partitioning was straightforward, the development of a self-specializing router posed a larger challenge. To address this, we leveraged a clustering algorithm to guide the router's decision-making process, effectively partitioning the dataset and assigning specialized tasks to each student model. This approach not only ensured efficient routing but also demonstrated the adaptability and scalability of MoIST. Future work includes refining the routing mechanism for better generalization across different datasets and extending the training duration to improve model performance. Additionally, integrating MoIST with other model compression techniques could enhance its efficiency, making it even more suitable for resource-constrained environments.
 
 \section{Member Contributions}
-We use each team member's initials: Amy Dong (AD), Henry Huang (HH), Sammy Goldston (SG), and Nicholas Yang (NY). \textit{Project Ideation:} AD, NY; \textit{Prototype MoIST Implementation:} AD, HH, SG; \textit{Router Exploration:} SG, HH, AD; \textit{Logit-Mapping Distribution:} AD; \textit{Baseline Model Comparisons:} NY; \textit{Parameter Sweeps:} NY, HH, SG, AD; \textit{Manual Fine-Tuning Implementation:} HH, AD; \textit{Cluster Mapping Implementation:} AD; \textit{README and Documentation:} NY, HH; \textit{Paper and Slides:} AD, NY, HH.
+We use each team member's initials: Amy Dong (AD), Henry Huang (HH), Sammy Goldston (SG), and Nicholas Yang (NY).
 
-\bibliographystyle{IEEEtran}
+\textit{Project Ideation:} AD, NY; 
+
+\textit{Baseline Model Comparisons:} AD, NY; 
+
+\textit{Logit-Mapping Distribution Ideation:} AD; 
+
+\textit{Logit-Mapping Distribution Implementation:} AD; 
+
+\textit{Prototype MoIST Ideation} AD, SG, HH;
+
+\textit{Prototype MoIST Implementation:} AD; 
+
+\textit{Router Exploration:} AD, SG, HH, AD; 
+
+\textit{Parameter Sweeps:} AD, NY, HH, SG; 
+
+\textit{Hardcoded Proof-of-Concept Implementation:} AD;
+
+\textit{Cluster Mapping Implementation:} AD; 
+
+\textit{README and Documentation:} AD, NY, HH;
+
+\textit{Paper and Slides:} AD, NY, HH.
+
+\bibliographystyle{IEEEtran} 
 \bibliography{refs}
 
 \end{document}
